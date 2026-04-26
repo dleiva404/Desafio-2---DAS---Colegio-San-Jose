@@ -4,7 +4,10 @@ namespace ColegioSanJose.Models
 {
     public class Materia
     {
+        // Tabla Materia
         public int MateriaId { get; set; }
+
+        // Validaciones formulario de registro de materias
 
         [Required(ErrorMessage = "Ingese el nombre de la materia")]
         [StringLength(100)]

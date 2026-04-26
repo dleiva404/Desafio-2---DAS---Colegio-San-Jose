@@ -4,8 +4,11 @@ namespace ColegioSanJose.Models
 {
     public class Alumno
     {
+        // Tabla Alumnos 
         public int AlumnoId { get; set; }
 
+        //Validaciones formulario de registro de alumnos
+        
         [Required(ErrorMessage = "Ingrese los nombres del alumno")]
         [StringLength(50)]
         [Display (Name = "Nombres")]
@@ -26,6 +29,7 @@ namespace ColegioSanJose.Models
         [Display(Name = "Grado")]
         public string? Grado { get; set; }
 
+        // Relación: un alumno puede tener muchos expedientes
         public ICollection<Expediente>? Expedientes { get; set; }
     }
 }

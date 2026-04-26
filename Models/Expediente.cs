@@ -4,7 +4,10 @@ namespace ColegioSanJose.Models
 {
     public class Expediente
     {
+        // Tabla Expediente
         public int ExpedienteId { get; set; }
+
+        // Validaciones formulario de registro de expedientes
 
         [Required(ErrorMessage = "Seleccione el alumno")]
         [Display(Name = "Alumno")]
@@ -23,6 +26,7 @@ namespace ColegioSanJose.Models
         [Display(Name = "Observaciones")]
         public string? Observaciones { get; set; }
 
+        // Relaciones
         public Alumno? Alumno { get; set; }
         public Materia? Materia { get; set; }
     }
