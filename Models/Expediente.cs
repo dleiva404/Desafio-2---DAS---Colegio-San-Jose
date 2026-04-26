@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ColegioSanJose.Models
 {
@@ -20,6 +21,7 @@ namespace ColegioSanJose.Models
         [Required(ErrorMessage = "Ingrese la nota final")]
         [Range(0, 10, ErrorMessage = "La nota debe estar entre 0 y 10")]
         [Display(Name = "Nota Final")]
+        [Column(TypeName = "decimal(5,2)")]
         public decimal NotaFinal { get; set; }
 
         [StringLength(200)]
