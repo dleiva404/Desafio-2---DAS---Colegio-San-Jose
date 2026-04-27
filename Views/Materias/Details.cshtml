@@ -1,30 +1,39 @@
 ﻿@model ColegioSanJose.Models.Materia
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles de la Materia";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Materia</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NombreMateria)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NombreMateria)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Docente)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Docente)
-        </dd>
-    </dl>
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Detalles de la Materia</h1>
+    <a asp-action="Index" class="btn btn-secondary btn-sm shadow-sm">
+        <i class="fas fa-arrow-left fa-sm"></i> Volver
+    </a>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.MateriaId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="card shadow mb-4 border-left-info">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-info">Información de la Materia</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th class="bg-light" style="width:30%">@Html.DisplayNameFor(model => model.NombreMateria)</th>
+                        <td>@Html.DisplayFor(model => model.NombreMateria)</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">@Html.DisplayNameFor(model => model.Docente)</th>
+                        <td>@Html.DisplayFor(model => model.Docente)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <a asp-action="Edit" asp-route-id="@Model.MateriaId" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Editar
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-list"></i> Ver Lista
+        </a>
+    </div>
 </div>

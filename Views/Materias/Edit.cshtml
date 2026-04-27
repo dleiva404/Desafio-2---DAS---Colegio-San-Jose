@@ -1,39 +1,45 @@
 ﻿@model ColegioSanJose.Models.Materia
-
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Materia";
 }
 
-<h1>Edit</h1>
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Editar Materia</h1>
+    <a asp-action="Index" class="btn btn-secondary btn-sm shadow-sm">
+        <i class="fas fa-arrow-left fa-sm"></i> Volver
+    </a>
+</div>
 
-<h4>Materia</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="card shadow mb-4 border-left-warning">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-warning">Editar Datos de la Materia</h6>
+    </div>
+    <div class="card-body">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
             <input type="hidden" asp-for="MateriaId" />
             <div class="form-group">
-                <label asp-for="NombreMateria" class="control-label"></label>
+                <label asp-for="NombreMateria" class="font-weight-bold"></label>
                 <input asp-for="NombreMateria" class="form-control" />
                 <span asp-validation-for="NombreMateria" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Docente" class="control-label"></label>
+                <label asp-for="Docente" class="font-weight-bold"></label>
                 <input asp-for="Docente" class="form-control" />
                 <span asp-validation-for="Docente" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+            <a asp-action="Index" class="btn btn-danger">
+                <i class="fas fa-times"></i> Cancelar
+            </a>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

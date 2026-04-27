@@ -1,42 +1,47 @@
 ﻿@model ColegioSanJose.Models.Expediente
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles del Expediente";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Expediente</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NotaFinal)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NotaFinal)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Observaciones)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Observaciones)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Alumno)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Alumno.Apellidos)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Materia)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Materia.Docente)
-        </dd>
-    </dl>
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Detalles del Expediente</h1>
+    <a asp-action="Index" class="btn btn-secondary btn-sm shadow-sm">
+        <i class="fas fa-arrow-left fa-sm"></i> Volver
+    </a>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.ExpedienteId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="card shadow mb-4 border-left-info">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-info">Información del Expediente</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th class="bg-light" style="width:30%">Alumno</th>
+                        <td>@Html.DisplayFor(model => model.Alumno.Nombres) @Html.DisplayFor(model => model.Alumno.Apellidos)</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Materia</th>
+                        <td>@Html.DisplayFor(model => model.Materia.NombreMateria)</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">@Html.DisplayNameFor(model => model.NotaFinal)</th>
+                        <td>@Html.DisplayFor(model => model.NotaFinal)</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">@Html.DisplayNameFor(model => model.Observaciones)</th>
+                        <td>@Html.DisplayFor(model => model.Observaciones)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <a asp-action="Edit" asp-route-id="@Model.ExpedienteId" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Editar
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-list"></i> Ver Lista
+        </a>
+    </div>
 </div>

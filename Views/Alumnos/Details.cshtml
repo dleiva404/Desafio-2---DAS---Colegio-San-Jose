@@ -1,42 +1,47 @@
 ﻿@model ColegioSanJose.Models.Alumno
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles del Alumno";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Alumno</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombres)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombres)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Apellidos)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Apellidos)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaNacimiento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaNacimiento)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Grado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Grado)
-        </dd>
-    </dl>
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Detalles del Alumno</h1>
+    <a asp-action="Index" class="btn btn-secondary btn-sm shadow-sm">
+        <i class="fas fa-arrow-left fa-sm"></i> Volver
+    </a>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.AlumnoId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="card shadow mb-4 border-left-info">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-info">Información del Alumno</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th class="bg-light" style="width:30%">@Html.DisplayNameFor(model => model.Nombres)</th>
+                        <td>@Html.DisplayFor(model => model.Nombres)</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">@Html.DisplayNameFor(model => model.Apellidos)</th>
+                        <td>@Html.DisplayFor(model => model.Apellidos)</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">@Html.DisplayNameFor(model => model.FechaNacimiento)</th>
+                        <td>@Html.DisplayFor(model => model.FechaNacimiento)</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">@Html.DisplayNameFor(model => model.Grado)</th>
+                        <td>@Html.DisplayFor(model => model.Grado)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <a asp-action="Edit" asp-route-id="@Model.AlumnoId" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Editar
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-list"></i> Ver Lista
+        </a>
+    </div>
 </div>
