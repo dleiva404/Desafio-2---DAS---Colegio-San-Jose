@@ -1,0 +1,83 @@
+﻿@model IEnumerable<ColegioSanJose.Models.PromedioAlumnos>
+@{
+    ViewData["Title"] = "Promedios por Alumno";
+}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Promedio de Notas por Alumno</h1>
+    <a asp-action="Index" class="btn btn-secondary btn-sm shadow-sm">
+        <i class="fas fa-arrow-left fa-sm"></i> Volver
+    </a>
+</div>
+
+@foreach (var alumno in Model)
+{
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">
+                @alumno.Nombres @alumno.Apellidos - <small>@alumno.Grado</small>
+            </h6>
+            @if (alumno.Promedio >= 7)
+            {
+                <span class="badge badge-success">Aprobado</span>
+            }
+            else
+            {
+                <span class="badge badge-danger">Reprobado</span>
+            }
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Materia</th>
+                            <th>Docente</th>
+                            <th>Nota Final</th>
+                            <th>Estado</th>
+                            <th>Observaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var expediente in alumno.Expedientes)
+                        {
+                            <tr>
+                                <td>@expediente.Materia.NombreMateria</td>
+                                <td>@expediente.Materia.Docente</td>
+                                <td>
+                                    @if (expediente.NotaFinal >= 7)
+                                    {
+                                        <span class="text-success font-weight-bold">@expediente.NotaFinal.ToString("F2")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger font-weight-bold">@expediente.NotaFinal.ToString("F2")</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (expediente.NotaFinal >= 7)
+                                    {
+                                        <span class="badge badge-success">Aprobado</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">Reprobado</span>
+                                    }
+                                </td>
+                                <td>@expediente.Observaciones</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="bg-light">
+                            <td colspan="2" class="font-weight-bold">Promedio General</td>
+                            <td colspan="2" class="font-weight-bold">
+                                @alumno.Promedio.ToString("F2")
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+}

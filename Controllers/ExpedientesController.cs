@@ -166,5 +166,30 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
         {
             return _context.Expedientes.Any(e => e.ExpedienteId == id);
         }
+        // GET: Expedientes/Promedios
+        public async Task<IActionResult> Promedios()
+        {
+            var expedientes = await _context.Expedientes
+                .Include(e => e.Alumno)
+                .Include(e => e.Materia)
+                .ToListAsync();
+
+            var promedios = expedientes
+                .GroupBy(e => new { e.AlumnoId, e.Alumno.Nombres, e.Alumno.Apellidos })
+                .Select(g => new PromedioAlumnos
+                {
+                    AlumnoId = g.Key.AlumnoId,
+                    Nombres = g.Key.Nombres,
+                    Apellidos = g.Key.Apellidos,
+                    Grado = g.First().Alumno.Grado,
+                    Promedio = g.Average(e => e.NotaFinal),
+                    TotalMaterias = g.Count(),
+                    Expedientes = g.ToList()
+                })
+                .ToList();
+
+            return View(promedios);
+        }
     }
+
 }
