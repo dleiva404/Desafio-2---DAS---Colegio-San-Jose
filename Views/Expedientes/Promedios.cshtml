@@ -81,3 +81,187 @@
         </div>
     </div>
 }
+
+<!-- Gráficos Estadísticos -->
+<div class="row mt-4">
+    <div class="col-xl-8 col-lg-7">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Promedio de Notas por Alumno</h6>
+                <small>
+                    <span style="color:#1cc88a">&#9632;</span> Aprobado (7-10) &nbsp;
+                    <span style="color:#f6c23e">&#9632;</span> En riesgo (6-7) &nbsp;
+                    <span style="color:#e74a3b">&#9632;</span> Reprobado (0-6)
+                </small>
+            </div>
+            <div class="card-body">
+                <canvas id="graficoBarras"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-lg-5 d-flex flex-column">
+        <div class="card shadow mb-4 flex-fill">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Resumen de Rendimiento</h6>
+            </div>
+            <div class="card-body" style="height:300px">
+                <canvas id="graficoPastel"></canvas>
+            </div>
+        </div>
+        <div class="card shadow mb-4 flex-fill">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Mejores Alumnos por Grado</h6>
+                <div class="mt-2" id="filtrosGrado">
+                    <button class="btn btn-sm btn-primary mr-1 filtro-grado active" data-grado="todos">Todos</button>
+                    @foreach (var grado in ((List<string>)ViewBag.GradosLabels).Distinct())
+                    {
+                        <button class="btn btn-sm btn-outline-primary mr-1 filtro-grado" data-grado="@grado">@grado</button>
+                    }
+                </div>
+            </div>
+            <div class="card-body" style="height:300px">
+                <canvas id="graficoMejores"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/vendor/chart.js/Chart.bundle.min.js"></script>
+    <script>
+        var nombres = @Html.Raw(Json.Serialize(ViewBag.NombresAlumnos));
+        var promedios = @Html.Raw(Json.Serialize(ViewBag.PromediosNotas));
+        var aprobados = @(ViewBag.Aprobados ?? 0);
+        var reprobados = @(ViewBag.Reprobados ?? 0);
+
+        // Colores dinámicos para el gráfico de barras
+        var colores = promedios.map(function(nota) {
+            if (nota < 6) return 'rgba(231, 74, 59, 1)';
+            else if (nota < 7) return 'rgba(246, 194, 62, 1)';
+            else return 'rgba(28, 200, 138, 1)';               
+        });
+
+        var bordeColores = promedios.map(function(nota) {
+            if (nota < 6) return 'rgba(231, 74, 59, 1)';
+            else if (nota < 7) return 'rgba(246, 194, 62, 1)';
+            else return 'rgba(28, 200, 138, 1)';
+        });
+
+        // Gráfico de Barras
+        var ctxBarras = document.getElementById('graficoBarras').getContext('2d');
+        new Chart(ctxBarras, {
+            type: 'bar',
+            data: {
+                labels: nombres,
+                datasets: [{
+                    label: 'Promedio de Notas',
+                    data: promedios,
+                    backgroundColor: colores,
+                    borderColor: bordeColores,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                legend: {
+                    display: false
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        max: 10
+                    }
+                }]
+            }
+        }
+        });
+
+        // Gráfico de Pastel
+        var ctxPastel = document.getElementById('graficoPastel').getContext('2d');
+        new Chart(ctxPastel, {
+            type: 'doughnut',
+            data: {
+                labels: ['Aprobados', 'Reprobados'],
+                datasets: [{
+                    data: [aprobados, reprobados],
+                    backgroundColor: ['#1cc88a', '#e74a3b'],
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        });
+        var gradosLabels = @Html.Raw(Json.Serialize(ViewBag.GradosLabels));
+        var mejoresNombres = @Html.Raw(Json.Serialize(ViewBag.MejoresNombres));
+        var mejoresPromedios = @Html.Raw(Json.Serialize(ViewBag.MejoresPromedios));
+        var coloresPorGrado = gradosLabels.map(function(grado, i) {
+        var palette = ['#4e73df','#1cc88a','#36b9cc','#f6c23e','#e74a3b','#858796'];
+        var gradosUnicos = [...new Set(gradosLabels)];
+        return palette[gradosUnicos.indexOf(grado) % palette.length];
+        });
+
+                var ctxMejores = document.getElementById('graficoMejores').getContext('2d');
+
+        var chartMejores = new Chart(ctxMejores, {
+            type: 'horizontalBar',
+            data: {
+                labels: mejoresNombres,
+                datasets: [{
+                    label: 'Promedio',
+                    data: mejoresPromedios,
+                    backgroundColor: coloresPorGrado,
+                    borderColor: coloresPorGrado,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                    legend: { display: false },
+                        scales: {
+                            xAxes: [{ ticks: { beginAtZero: true, max: 10 } }]
+            }
+        }
+        });
+
+        // Filtro por grado
+        document.querySelectorAll('.filtro-grado').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                // Actualizar botón activo
+                document.querySelectorAll('.filtro-grado').forEach(function(b) {
+                    b.classList.remove('active', 'btn-primary');
+                    b.classList.add('btn-outline-primary');
+                });
+                this.classList.add('active', 'btn-primary');
+                this.classList.remove('btn-outline-primary');
+
+                var gradoSeleccionado = this.getAttribute('data-grado');
+
+                  if (gradoSeleccionado === 'todos') {
+                    chartMejores.data.labels = mejoresNombres;
+                    chartMejores.data.datasets[0].data = mejoresPromedios;
+                    chartMejores.data.datasets[0].backgroundColor = coloresPorGrado;
+                    chartMejores.data.datasets[0].borderColor = coloresPorGrado;  // ← agregar esta línea
+                  } else {
+                    var labelsF = [], datosF = [], coloresF = [];
+                    gradosLabels.forEach(function(g, i) {
+                    if (g === gradoSeleccionado) {
+                    labelsF.push(mejoresNombres[i]);
+                    datosF.push(mejoresPromedios[i]);
+                    coloresF.push(coloresPorGrado[i]);
+                    }
+                });
+                    chartMejores.data.labels = labelsF;
+                    chartMejores.data.datasets[0].data = datosF;
+                    chartMejores.data.datasets[0].backgroundColor = coloresF;
+                    chartMejores.data.datasets[0].borderColor = coloresF;
+                    }
+
+                chartMejores.update();
+            });
+        });
+    </script>
+}

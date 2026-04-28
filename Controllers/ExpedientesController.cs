@@ -49,14 +49,12 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
         // GET: Expedientes/Create
         public IActionResult Create()
         {
-            ViewData["AlumnoId"] = new SelectList(_context.Alumnos, "AlumnoId", "Nombres");
+            ViewData["AlumnoId"] = new SelectList(_context.Alumnos.Select(a => new { a.AlumnoId, NombreCompleto = a.Nombres + " " + a.Apellidos }), "AlumnoId", "NombreCompleto");
             ViewData["MateriaId"] = new SelectList(_context.Materias, "MateriaId", "NombreMateria");
             return View();
         }
 
         // POST: Expedientes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ExpedienteId,AlumnoId,MateriaId,NotaFinal,Observaciones")] Expediente expediente)
@@ -67,7 +65,7 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AlumnoId"] = new SelectList(_context.Alumnos, "AlumnoId", "Nombres", expediente.AlumnoId);
+            ViewData["AlumnoId"] = new SelectList(_context.Alumnos.Select(a => new { a.AlumnoId, NombreCompleto = a.Nombres + " " + a.Apellidos }), "AlumnoId", "NombreCompleto");
             ViewData["MateriaId"] = new SelectList(_context.Materias, "MateriaId", "NombreMateria", expediente.MateriaId);
             return View(expediente);
         }
@@ -85,14 +83,12 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
             {
                 return NotFound();
             }
-            ViewData["AlumnoId"] = new SelectList(_context.Alumnos, "AlumnoId", "Nombres", expediente.AlumnoId);
+            ViewData["AlumnoId"] = new SelectList(_context.Alumnos.Select(a => new { a.AlumnoId, NombreCompleto = a.Nombres + " " + a.Apellidos }), "AlumnoId", "NombreCompleto");
             ViewData["MateriaId"] = new SelectList(_context.Materias, "MateriaId", "NombreMateria", expediente.MateriaId);
             return View(expediente);
         }
 
         // POST: Expedientes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ExpedienteId,AlumnoId,MateriaId,NotaFinal,Observaciones")] Expediente expediente)
@@ -122,7 +118,7 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AlumnoId"] = new SelectList(_context.Alumnos, "AlumnoId", "Nombres", expediente.AlumnoId);
+            ViewData["AlumnoId"] = new SelectList(_context.Alumnos.Select(a => new { a.AlumnoId, NombreCompleto = a.Nombres + " " + a.Apellidos }), "AlumnoId", "NombreCompleto");
             ViewData["MateriaId"] = new SelectList(_context.Materias, "MateriaId", "NombreMateria", expediente.MateriaId);
             return View(expediente);
         }
@@ -166,6 +162,7 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
         {
             return _context.Expedientes.Any(e => e.ExpedienteId == id);
         }
+
         // GET: Expedientes/Promedios
         public async Task<IActionResult> Promedios()
         {
@@ -188,8 +185,35 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
                 })
                 .ToList();
 
+            ViewBag.NombresAlumnos = promedios.Select(p => p.Nombres + " " + p.Apellidos).ToList();
+            ViewBag.PromediosNotas = promedios.Select(p => p.Promedio).ToList();
+            ViewBag.Aprobados = promedios.Count(p => p.Promedio >= 7);
+            ViewBag.Reprobados = promedios.Count(p => p.Promedio < 7);
+
+            var mejoresPorGrado = promedios
+                .GroupBy(p => p.Grado)
+                .SelectMany(g => g.OrderByDescending(p => p.Promedio).Take(3)
+                    .Select((p, i) => new PromedioAlumnos
+                    {
+                        Grado = p.Grado,
+                        Nombres = p.Nombres,
+                        Apellidos = p.Apellidos,
+                        Promedio = p.Promedio,
+                        AlumnoId = p.AlumnoId,
+                        TotalMaterias = p.TotalMaterias
+                    }))
+                .OrderBy(p => {
+                    var orden = new List<string> { "Primer", "Segundo", "Tercer", "Cuarto", "Quinto", "Sexto", "Séptimo", "Octavo", "Noveno", "Bachillerato" };
+                    var idx = orden.FindIndex(o => p.Grado.Contains(o));
+                    return idx == -1 ? 99 : idx;
+                })
+                .ToList();
+
+            ViewBag.GradosLabels = mejoresPorGrado.Select(p => p.Grado).ToList();
+            ViewBag.MejoresNombres = mejoresPorGrado.Select(p => p.Nombres + " " + p.Apellidos).ToList();
+            ViewBag.MejoresPromedios = mejoresPorGrado.Select(p => p.Promedio).ToList();
+
             return View(promedios);
         }
     }
-
 }
