@@ -52,4 +52,10 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @Html.ValidationSummary(false)
+        </div>
+    }
 }

@@ -8,14 +8,16 @@ namespace ColegioSanJose.Models
         public int AlumnoId { get; set; }
 
         //Validaciones formulario de registro de alumnos
-        
+
         [Required(ErrorMessage = "Ingrese los nombres del alumno")]
         [StringLength(50)]
-        [Display (Name = "Nombres")]
+        [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$", ErrorMessage = "Solo se permiten letras.")]
+        [Display(Name = "Nombres")]
         public string? Nombres { get; set; }
 
         [Required(ErrorMessage = "Ingrese los apellidos del alumno")]
         [StringLength(50)]
+        [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$", ErrorMessage = "Solo se permiten letras.")]
         [Display(Name = "Apellidos")]
         public string? Apellidos { get; set; }
 

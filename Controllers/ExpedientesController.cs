@@ -59,10 +59,22 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ExpedienteId,AlumnoId,MateriaId,NotaFinal,Observaciones")] Expediente expediente)
         {
+            var duplicado = await _context.Expedientes
+               .AnyAsync(e => e.AlumnoId == expediente.AlumnoId
+               && e.MateriaId == expediente.MateriaId);
+
+            if (duplicado)
+            {
+                ModelState.AddModelError("", "Este alumno ya tiene registrada esa materia.");
+                ViewData["AlumnoId"] = new SelectList(_context.Alumnos.Select(a => new { a.AlumnoId, NombreCompleto = a.Nombres + " " + a.Apellidos }), "AlumnoId", "NombreCompleto", expediente.AlumnoId);
+                ViewData["MateriaId"] = new SelectList(_context.Materias, "MateriaId", "NombreMateria", expediente.MateriaId);
+                return View(expediente);
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(expediente);
                 await _context.SaveChangesAsync();
+                TempData["Exito"] = "Registro creado exitosamente.";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["AlumnoId"] = new SelectList(_context.Alumnos.Select(a => new { a.AlumnoId, NombreCompleto = a.Nombres + " " + a.Apellidos }), "AlumnoId", "NombreCompleto");
@@ -98,6 +110,19 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
                 return NotFound();
             }
 
+            var duplicado = await _context.Expedientes
+                .AnyAsync(e => e.AlumnoId == expediente.AlumnoId
+                           && e.MateriaId == expediente.MateriaId
+                           && e.ExpedienteId != expediente.ExpedienteId);
+
+            if (duplicado)
+            {
+                ModelState.AddModelError("", "Este alumno ya tiene registrada esa materia.");
+                ViewData["AlumnoId"] = new SelectList(_context.Alumnos.Select(a => new { a.AlumnoId, NombreCompleto = a.Nombres + " " + a.Apellidos }), "AlumnoId", "NombreCompleto", expediente.AlumnoId);
+                ViewData["MateriaId"] = new SelectList(_context.Materias, "MateriaId", "NombreMateria", expediente.MateriaId);
+                return View(expediente);
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -116,6 +141,7 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
                         throw;
                     }
                 }
+                TempData["Exito"] = "Registro actualizado exitosamente.";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["AlumnoId"] = new SelectList(_context.Alumnos.Select(a => new { a.AlumnoId, NombreCompleto = a.Nombres + " " + a.Apellidos }), "AlumnoId", "NombreCompleto");
@@ -155,6 +181,7 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["Exito"] = "Registro eliminado exitosamente.";
             return RedirectToAction(nameof(Index));
         }
 

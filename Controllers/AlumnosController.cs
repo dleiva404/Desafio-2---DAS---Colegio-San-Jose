@@ -56,10 +56,21 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AlumnoId,Nombres,Apellidos,FechaNacimiento,Grado")] Alumno alumno)
         {
+            var duplicado = await _context.Alumnos
+               .AnyAsync(a => a.Nombres == alumno.Nombres
+               && a.Apellidos == alumno.Apellidos
+               && a.FechaNacimiento == alumno.FechaNacimiento);
+
+            if (duplicado)
+            {
+                ModelState.AddModelError("", "Ya existe un alumno registrado con ese nombre y fecha de nacimiento.");
+                return View(alumno);
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(alumno);
                 await _context.SaveChangesAsync();
+                TempData["Exito"] = "Registro creado exitosamente.";
                 return RedirectToAction(nameof(Index));
             }
             return View(alumno);
@@ -93,6 +104,18 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
                 return NotFound();
             }
 
+            var duplicado = await _context.Alumnos
+               .AnyAsync(a => a.Nombres == alumno.Nombres
+               && a.Apellidos == alumno.Apellidos
+               && a.FechaNacimiento == alumno.FechaNacimiento
+               && a.AlumnoId != alumno.AlumnoId);
+
+            if (duplicado)
+            {
+                ModelState.AddModelError("", "Ya existe un alumno registrado con ese nombre y fecha de nacimiento.");
+                return View(alumno);
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -111,6 +134,7 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
                         throw;
                     }
                 }
+                TempData["Exito"] = "Registro actualizado exitosamente.";
                 return RedirectToAction(nameof(Index));
             }
             return View(alumno);
@@ -146,6 +170,7 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["Exito"] = "Registro eliminado exitosamente.";
             return RedirectToAction(nameof(Index));
         }
 

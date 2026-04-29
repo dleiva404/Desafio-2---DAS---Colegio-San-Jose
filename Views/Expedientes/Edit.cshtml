@@ -20,7 +20,8 @@
             <input type="hidden" asp-for="ExpedienteId" />
             <div class="form-group">
                 <label asp-for="AlumnoId" class="font-weight-bold"></label>
-                <select asp-for="AlumnoId" class="form-control" asp-items="ViewBag.AlumnoId">
+                <select asp-for="AlumnoId" class="form-control" asp-items="ViewBag.AlumnoId" disabled></select>
+                <input type="hidden" asp-for="AlumnoId" />
                     <option value="">-- Seleccione un Alumno --</option>
                 </select>
                 <span asp-validation-for="AlumnoId" class="text-danger"></span>

@@ -60,6 +60,7 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
             {
                 _context.Add(materia);
                 await _context.SaveChangesAsync();
+                TempData["Exito"] = "Registro creado exitosamente.";
                 return RedirectToAction(nameof(Index));
             }
             return View(materia);
@@ -111,6 +112,7 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
                         throw;
                     }
                 }
+                TempData["Exito"] = "Registro actualizado exitosamente.";
                 return RedirectToAction(nameof(Index));
             }
             return View(materia);
@@ -146,6 +148,7 @@ namespace Desafio_2___DAS___Colegio_San_Jose.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["Exito"] = "Registro eliminado exitosamente.";
             return RedirectToAction(nameof(Index));
         }
 
